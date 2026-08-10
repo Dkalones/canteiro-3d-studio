@@ -115,7 +115,7 @@ function Barrack({
       <mesh position={[0, el.height + roofH / 2, 0]} castShadow>
         <boxGeometry args={[w + 0.5, roofH, d + 0.5]} />
         <meshStandardMaterial
-          color="#5d6570"
+          color="#8b939c"
           transparent={dim}
           opacity={dim ? 0.25 : 1}
         />
@@ -522,13 +522,14 @@ export default function Scene({
     <Canvas
       shadows
       dpr={[1, 1.8]}
-      camera={{ position: [0, 62, 82], fov: 45, far: 800 }}
+      camera={{ position: [8, 88, 112], fov: 42, far: 800 }}
       onPointerMissed={() => onSelect(null)}
     >
       <color attach="background" args={["#cfd9e2"]} />
       <fog attach="fog" args={["#cfd9e2", 130, 340]} />
       <Sky sunPosition={[60, 40, -30]} turbidity={6} rayleigh={1.2} />
-      <hemisphereLight args={["#e6eef5", "#7e7a63", 0.85]} />
+      <hemisphereLight args={["#eef4fa", "#8f8a72", 1.25]} />
+      <ambientLight intensity={0.35} />
       <directionalLight
         position={[48, 60, -24]}
         intensity={1.5}
