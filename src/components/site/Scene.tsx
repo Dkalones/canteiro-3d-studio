@@ -213,20 +213,14 @@ function ConstructionArea({ el, dim }: { el: SiteElement; dim: boolean }) {
         <meshStandardMaterial color="#8f8b80" transparent opacity={dim ? 0.2 : 1} />
       </mesh>
       {/* delimitação da frente de serviço */}
-      {[
-        [0, -d / 2],
-        [0, d / 2],
-      ].map(([px, pz], i) => (
-        <mesh key={i} position={[px, 0.5, pz]}>
+      {([-d / 2, d / 2] as const).map((pz, i) => (
+        <mesh key={i} position={[0, 0.5, pz]}>
           <boxGeometry args={[w, 1, 0.12]} />
           <meshStandardMaterial color="#e0b93a" transparent opacity={dim ? 0.2 : 0.9} />
         </mesh>
       ))}
-      {[
-        [-w / 2, 0],
-        [w / 2, 0],
-      ].map(([px, pz], i) => (
-        <mesh key={`s${i}`} position={[px, 0.5, pz]}>
+      {([-w / 2, w / 2] as const).map((px, i) => (
+        <mesh key={`s${i}`} position={[px, 0.5, 0]}>
           <boxGeometry args={[0.12, 1, d]} />
           <meshStandardMaterial color="#e0b93a" transparent opacity={dim ? 0.2 : 0.9} />
         </mesh>
