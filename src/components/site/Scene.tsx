@@ -374,7 +374,7 @@ function Ubs({
 }
 
 function Scaffolding() {
-  const mass = UBS_MASSES[1];
+  const mass = UBS_MASSES[1]!;
   const bays = 8;
   return (
     <group position={[mass.geom.x, 0, mass.geom.z - mass.geom.d / 2 - 1]}>
