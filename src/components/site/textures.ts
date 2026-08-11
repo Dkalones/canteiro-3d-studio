@@ -1,6 +1,12 @@
 /**
- * Texturas procedurais (canvas) — evitam downloads externos e dão
- * um acabamento mais realista aos materiais do canteiro.
+ * textures.ts
+ * Texturas procedurais (canvas) para os materiais do canteiro.
+ *
+ * Correções aplicadas:
+ * - colorSpace=SRGBColorSpace em todas as texturas de cor (diffuse)
+ * - repeat reduzido no ground: 60→12 (evita visual pixelado/bugado)
+ * - anisotropy aumentado para reduzir borramento em ângulos rasantes
+ * - needsUpdate=true explícito após draw
  */
 import * as THREE from "three";
 
@@ -13,9 +19,11 @@ function makeCanvas(size = 256) {
 
 function finish(c: HTMLCanvasElement, repeat: number) {
   const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeat, repeat);
-  t.anisotropy = 4;
+  t.anisotropy = 8;
+  t.needsUpdate = true;
   return t;
 }
 
@@ -36,12 +44,23 @@ function noise(
   }
 }
 
-export function makeGroundTexture(repeat = 40) {
-  const size = 256;
+// repeat=12: num plano de 92m com textura 256px → tiles de ~7,7m cada
+// Antes estava em 60 → tiles de ~1,5m → parecia pixelado/bugado
+export function makeGroundTexture(repeat = 12) {
+  const size = 512; // tamanho maior = mais detalhe por tile
   const { c, ctx } = makeCanvas(size);
   ctx.fillStyle = "#8a7a63";
   ctx.fillRect(0, 0, size, size);
-  noise(ctx, size, 5000, ["#7d6d57", "#96866d", "#6f6151", "#a09071"], 0.6, 2.6);
+  noise(ctx, size, 8000, ["#7d6d57", "#96866d", "#6f6151", "#a09071"], 0.6, 2.6);
+  // linhas de textura do solo compactado
+  for (let i = 0; i < 30; i++) {
+    ctx.strokeStyle = `rgba(100,88,68,${0.05 + Math.random() * 0.08})`;
+    ctx.lineWidth = 0.5 + Math.random() * 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Math.random() * size, Math.random() * size);
+    ctx.lineTo(Math.random() * size, Math.random() * size);
+    ctx.stroke();
+  }
   return finish(c, repeat);
 }
 
@@ -136,3 +155,4 @@ export function makeTileTexture(repeat = 8) {
   noise(ctx, size, 800, ["#cfc9bd", "#e2ddd2"], 0.5, 1.5);
   return finish(c, repeat);
 }
+
