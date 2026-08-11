@@ -28,7 +28,7 @@ function noise(
   max = 3,
 ) {
   for (let i = 0; i < count; i++) {
-    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)] ?? "#888";
     const r = min + Math.random() * (max - min);
     ctx.beginPath();
     ctx.arc(Math.random() * size, Math.random() * size, r, 0, Math.PI * 2);
