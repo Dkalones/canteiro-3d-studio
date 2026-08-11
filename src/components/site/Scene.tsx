@@ -52,7 +52,7 @@ export type SceneProps = {
 function useSiteTextures() {
   return useMemo(
     () => ({
-      ground: makeGroundTexture(60),
+      ground: makeGroundTexture(12),
       concrete: makeConcreteTexture(3),
       asphalt: makeAsphaltTexture(20),
       sand: makeSandTexture(2),
@@ -1090,3 +1090,4 @@ export default function Scene({
     </Canvas>
   );
 }
+
