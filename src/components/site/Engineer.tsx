@@ -1,3 +1,5 @@
+
+Engineer · TSX
 /**
  * Engineer.tsx
  * Figuras humanas 3D (engenheiros) carregadas via OBJ + texturas PBR.
@@ -8,13 +10,13 @@
  * - clone() usado corretamente: geometria clonada por instância, material único e correto
  * - Sem dependência de useEffect assíncrono para aplicar textura
  */
-
+ 
 import { useEffect, useMemo } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
-
+ 
 import eng1Obj from "@/assets/models/eng1_base.obj.asset.json";
 import eng1Diffuse from "@/assets/models/eng1_texture_diffuse.png.asset.json";
 import eng1Normal from "@/assets/models/eng1_texture_normal.png.asset.json";
@@ -25,7 +27,7 @@ import eng2Diffuse from "@/assets/models/eng2_texture_diffuse.png.asset.json";
 import eng2Normal from "@/assets/models/eng2_texture_normal.png.asset.json";
 import eng2Rough from "@/assets/models/eng2_texture_roughness.png.asset.json";
 import eng2Metal from "@/assets/models/eng2_texture_metallic.png.asset.json";
-
+ 
 const SOURCES = {
   1: {
     obj: eng1Obj.url,
@@ -36,47 +38,48 @@ const SOURCES = {
     maps: [eng2Diffuse.url, eng2Normal.url, eng2Rough.url, eng2Metal.url] as const,
   },
 } as const;
-
+ 
 type EngineerProps = {
   model?: 1 | 2;
   position?: [number, number, number];
   rotationY?: number;
 };
-
+ 
 export default function Engineer({
   model = 1,
   position = [0, 0, 0],
   rotationY = 0,
 }: EngineerProps) {
   const src = SOURCES[model];
-
+ 
   // OBJ: useLoader garante que o mesmo objeto é reutilizado entre instâncias
   const obj = useLoader(OBJLoader, src.obj);
-
+ 
   // Texturas: useTexture retorna Texture[] quando passamos array
   const textures = useTexture([...src.maps]) as THREE.Texture[];
   const [diffuse, normal, roughness, metallic] = textures;
-
+ 
   // Configurar as texturas ANTES de criar o material.
-  // Importante: flipY=false porque o OBJ exportado do Blender usa
-  // coordenadas UV com origem no canto inferior-esquerdo (OpenGL), mas
-  // o Three.js TextureLoader carrega com flipY=true (DirectX convention).
-  // colorSpace=SRGBColorSpace só para a diffuse (cor); as demais são lineares.
+  // Importante: NÃO mexer no flipY — o TextureLoader do Three.js já usa
+  // flipY=true por padrão, e é esse padrão que compensa corretamente a
+  // convenção de UV do Blender/OpenGL para modelos OBJ. Forçar flipY=false
+  // desalinha as UVs em relação à imagem e faz cada triângulo amostrar o
+  // pedaço errado do atlas — era isso que causava a textura "embaralhada".
+  // colorSpace=SRGBColorSpace só para a diffuse (cor); os mapas de dados
+  // (normal/roughness/metallic) usam NoColorSpace, não LinearSRGBColorSpace.
   useMemo(() => {
     if (diffuse) {
-      diffuse.flipY = false;
       diffuse.colorSpace = THREE.SRGBColorSpace;
       diffuse.needsUpdate = true;
     }
     [normal, roughness, metallic].forEach((tex) => {
       if (!tex) return;
-      tex.flipY = false;
-      tex.colorSpace = THREE.LinearSRGBColorSpace;
+      tex.colorSpace = THREE.NoColorSpace;
       tex.needsUpdate = true;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [diffuse, normal, roughness, metallic]);
-
+ 
   // Material criado em useMemo — determinístico, não assíncrono
   const material = useMemo(() => {
     const mat = new THREE.MeshStandardMaterial({ roughness: 0.85 });
@@ -88,11 +91,11 @@ export default function Engineer({
     mat.needsUpdate = true;
     return mat;
   }, [diffuse, normal, roughness, metallic]);
-
+ 
   // Cada instância precisa do seu próprio Group com geometrias clonadas
   // para não compartilhar referências internas do mesmo OBJ carregado.
   const cloned = useMemo(() => obj.clone(true), [obj]);
-
+ 
   // Aplica o material correto a cada mesh clonado
   useEffect(() => {
     cloned.traverse((child) => {
@@ -108,14 +111,14 @@ export default function Engineer({
       }
     });
   }, [cloned, material]);
-
+ 
   // Cleanup do material ao desmontar
   useEffect(() => {
     return () => {
       material.dispose();
     };
   }, [material]);
-
+ 
   return (
     <primitive
       object={cloned}
@@ -124,4 +127,3 @@ export default function Engineer({
     />
   );
 }
-
