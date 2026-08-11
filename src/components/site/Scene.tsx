@@ -91,13 +91,13 @@ function Wall({
   len: number;
   h: number;
   t?: number;
-  door?: boolean;
-  windows?: number;
-  color?: string;
-  map?: THREE.Texture;
+  door?: boolean | undefined;
+  windows?: number | undefined;
+  color?: string | undefined;
+  map?: THREE.Texture | undefined;
 }) {
   const mat = (
-    <meshStandardMaterial color={color} map={map} roughness={0.92} metalness={0.02} />
+    <meshStandardMaterial color={color} map={map ?? null} roughness={0.92} metalness={0.02} />
   );
 
   if (door && len > DOOR_W + 0.6) {
@@ -208,9 +208,9 @@ function WalledBox({
   w: number;
   d: number;
   h: number;
-  t?: number;
-  color?: string;
-  map?: THREE.Texture;
+  t?: number | undefined;
+  color?: string | undefined;
+  map?: THREE.Texture | undefined;
   doorSide?: "south" | "north";
   windows?: boolean;
 }) {
