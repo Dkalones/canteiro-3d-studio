@@ -89,7 +89,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(410, 383, 583, 600),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "vestiario",
@@ -98,7 +98,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(405, 600, 583, 760),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "sanitarias",
@@ -107,7 +107,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(405, 760, 490, 822),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "lavanderias",
@@ -116,7 +116,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(490, 760, 583, 822),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "dorm1",
@@ -125,7 +125,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(410, 822, 495, 990),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "dorm2",
@@ -134,7 +134,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(495, 822, 583, 990),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "reunioes",
@@ -143,7 +143,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3,
     geom: rect(405, 1025, 583, 1145),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-5", "NR-18", "NR-23", "NR-24"],
   },
 
   // ---- Apoio / administração (faixa leste) ----
@@ -154,7 +154,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3.2,
     geom: rect(1580, 340, 1648, 492),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-4", "NR-5", "NR-18", "NR-23"],
   },
   {
     id: "agua",
@@ -163,7 +163,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3.6,
     geom: rect(1602, 518, 1650, 605),
-    nrs: ["NR-18", "NR-24"],
+    nrs: ["NR-1", "NR-18", "NR-23", "NR-24"],
   },
   {
     id: "almoxarifado",
@@ -172,7 +172,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "building",
     height: 3.2,
     geom: rect(1575, 1025, 1645, 1148),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-6", "NR-18", "NR-23"],
   },
 
   // ---- Armazenamento ----
@@ -183,7 +183,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "stock",
     height: 1.2,
     geom: rect(1580, 632, 1648, 855),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-6", "NR-12", "NR-18"],
   },
   {
     id: "brita",
@@ -192,7 +192,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "stock",
     height: 1.4,
     geom: rect(620, 1050, 835, 1140),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-6", "NR-18", "NR-23"],
   },
   {
     id: "cal",
@@ -201,7 +201,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "stock",
     height: 1.4,
     geom: rect(845, 1050, 1063, 1140),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-6", "NR-18", "NR-23"],
   },
   {
     id: "cimento",
@@ -210,7 +210,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "stock",
     height: 1.4,
     geom: rect(1070, 1050, 1290, 1140),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-6", "NR-18", "NR-23"],
   },
   {
     id: "areia",
@@ -219,7 +219,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "stock",
     height: 1.4,
     geom: rect(1297, 1050, 1515, 1140),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-6", "NR-18", "NR-23"],
   },
 
   // ---- Circulação ----
@@ -230,7 +230,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "road",
     height: 0.06,
     geom: rect(620, 863, 1650, 995),
-    nrs: ["NR-18"],
+    nrs: ["NR-1", "NR-12", "NR-18", "NR-23"],
   },
 
   // ---- Elétrica ----
@@ -241,7 +241,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "point",
     height: 2.4,
     geom: rect(1528, 1140, 1552, 1164),
-    nrs: ["NR-10", "NR-18"],
+    nrs: ["NR-1", "NR-10", "NR-12", "NR-18"],
   },
 
   // ---- Área de construção ----
@@ -252,7 +252,7 @@ export const SITE_ELEMENTS: SiteElement[] = [
     kind: "area",
     height: 0.1,
     geom: rect(665, 380, 1500, 818),
-    nrs: ["NR-18", "NR-35"],
+    nrs: ["NR-1", "NR-6", "NR-12", "NR-18", "NR-35"],
   },
 ];
 
@@ -266,28 +266,86 @@ export const EQUIPMENT = [
 
 export const NR_LAYERS = [
   {
+    id: "NR-1",
+    label: "NR-1 — Disposições gerais e GRO",
+    description:
+      "Gerenciamento de riscos ocupacionais, ordem de serviço, treinamentos e organização geral do canteiro. Aplica-se a todas as áreas.",
+    categories: [
+      "vivencia",
+      "apoio",
+      "armazenamento",
+      "circulacao",
+      "eletrica",
+      "construcao",
+    ] as Category[],
+  },
+  {
+    id: "NR-4",
+    label: "NR-4 — SESMT",
+    description:
+      "Dimensionamento dos serviços especializados em segurança e medicina do trabalho, com base administrativa no escritório da obra.",
+    categories: ["apoio"] as Category[],
+  },
+  {
+    id: "NR-5",
+    label: "NR-5 — CIPA",
+    description:
+      "Comissão interna de prevenção de acidentes: reuniões, quadro de avisos e ações educativas nas áreas de vivência e administração.",
+    categories: ["vivencia", "apoio"] as Category[],
+  },
+  {
+    id: "NR-6",
+    label: "NR-6 — EPI",
+    description:
+      "Fornecimento, guarda e uso de equipamentos de proteção individual (capacete, botina, luvas, protetor auricular) na frente de serviço e no manuseio de materiais.",
+    categories: ["construcao", "armazenamento", "apoio"] as Category[],
+  },
+  {
+    id: "NR-10",
+    label: "NR-10 — Instalações elétricas",
+    description:
+      "Fonte de energia, quadros provisórios e distribuição elétrica do canteiro, com proteção contra choques e aterramento.",
+    categories: ["eletrica"] as Category[],
+  },
+  {
+    id: "NR-12",
+    label: "NR-12 — Máquinas e equipamentos",
+    description:
+      "Betoneiras, serras, equipamentos de movimentação e circulação de veículos: proteções fixas, dispositivos de partida e sinalização.",
+    categories: ["armazenamento", "circulacao", "construcao", "eletrica"] as Category[],
+  },
+  {
     id: "NR-18",
     label: "NR-18 — Canteiro de obras",
     description:
-      "Organização do canteiro: áreas de vivência, armazenamento, circulação e área de construção.",
+      "Organização do canteiro: áreas de vivência, armazenamento, circulação, tapume, portão de acesso e frente de serviço.",
+    categories: [
+      "vivencia",
+      "apoio",
+      "armazenamento",
+      "circulacao",
+      "construcao",
+    ] as Category[],
+  },
+  {
+    id: "NR-23",
+    label: "NR-23 — Proteção contra incêndios",
+    description:
+      "Extintores, sinalização, rotas de fuga e saída pelo portão de acesso; cuidados no armazenamento de materiais e nas áreas de vivência.",
     categories: ["vivencia", "apoio", "armazenamento", "circulacao", "construcao"] as Category[],
   },
   {
     id: "NR-24",
     label: "NR-24 — Condições de higiene e conforto",
-    description: "Instalações sanitárias, vestiário, refeitório, dormitórios, lavanderias e água.",
-    categories: ["vivencia"] as Category[],
-  },
-  {
-    id: "NR-10",
-    label: "NR-10 — Instalações elétricas",
-    description: "Fonte de energia elétrica e distribuição provisória do canteiro.",
-    categories: ["eletrica"] as Category[],
+    description:
+      "Instalações sanitárias, vestiário, refeitório, dormitórios, lavanderias e água potável.",
+    categories: ["vivencia", "apoio"] as Category[],
   },
   {
     id: "NR-35",
     label: "NR-35 — Trabalho em altura",
-    description: "Frente de serviço da UBS, onde ocorrem atividades acima de 2,00 m.",
+    description:
+      "Frente de serviço da UBS: andaimes com guarda-corpo e rodapé, ancoragem e atividades acima de 2,00 m.",
     categories: ["construcao"] as Category[],
   },
 ];
