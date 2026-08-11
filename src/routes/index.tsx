@@ -43,6 +43,7 @@ function Index() {
   );
   const [showUbsRooms, setShowUbsRooms] = useState(true);
   const [showRoofs, setShowRoofs] = useState(false);
+  const [showEngineers, setShowEngineers] = useState(true);
   const [nr, setNr] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ x: number; z: number; label: string } | null>(null);
   const [selected, setSelected] = useState<{ id: string; label: string; detail: string } | null>(
@@ -80,6 +81,7 @@ function Index() {
               visibleCategories={visible}
               showUbsRooms={showUbsRooms}
               showRoofs={showRoofs}
+              showEngineers={showEngineers}
               highlightNr={nr}
               focus={focus}
               onSelect={setSelected}
@@ -95,7 +97,7 @@ function Index() {
             Canteiro de Obras 3D — UBS Porte II
           </h1>
           <p className="text-xs text-muted-foreground">
-            Layout do canteiro + Planta baixa da UBS · pranchas sem escala, proporção preservada
+            Layout do canteiro + planta baixa da UBS · edificação em escala 1:50 · portas 0,90 × 2,10 m
           </p>
         </div>
       </header>
@@ -173,6 +175,15 @@ function Index() {
               className="size-3.5"
             />
             Cobertura (laje)
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-xs">
+            <input
+              type="checkbox"
+              checked={showEngineers}
+              onChange={(e) => setShowEngineers(e.target.checked)}
+              className="size-3.5"
+            />
+            Equipe em campo (engenheiros)
           </label>
           <ul className="mt-1 space-y-1">
             {Object.entries(UBS_ZONE_INFO).map(([k, z]) => (
