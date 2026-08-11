@@ -1,5 +1,3 @@
-
-Engineer · TSX
 /**
  * Engineer.tsx
  * Figuras humanas 3D (engenheiros) carregadas via OBJ + texturas PBR.
