@@ -21,7 +21,13 @@ import {
   type Category,
   type SiteElement,
 } from "@/lib/site-data";
-import { UBS_MASSES, UBS_ROOMS, UBS_ZONE_INFO, type UbsRoom } from "@/lib/ubs-data";
+import {
+  UBS_MASSES,
+  UBS_ROOMS,
+  UBS_ZONE_INFO,
+  type RoomFaces,
+  type UbsRoom,
+} from "@/lib/ubs-data";
 import { ENGINEERS } from "@/lib/engineer-data";
 import Engineer from "@/components/site/Engineer";
 import {
@@ -776,8 +782,7 @@ function UbsRoomMesh({
             t={0.15}
             color="#ded7c8"
             map={tex.concrete}
-            doorSide="south"
-            windows
+            faces={room.faces}
           />
         </group>
       )}
