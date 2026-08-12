@@ -23,7 +23,7 @@ export const ENGINEERS: EngineerInstance[] = [
   {
     id: "eng-1",
     model: 2,           // com EPI
-    position: [-2, 0, -8],
+    position: [-0.94, 0, -6.94],
     rotationY: Math.PI * 0.25,   // olhando ~45° para o canteiro
     label: "Engenheiro de campo",
   },
@@ -50,7 +50,7 @@ export const ENGINEERS: EngineerInstance[] = [
   {
     id: "eng-4",
     model: 1,
-    position: [18, 0, -5],
+    position: [19.06, 0, -6.06],
     rotationY: Math.PI * 0.75,
     label: "Almoxarife",
   },
