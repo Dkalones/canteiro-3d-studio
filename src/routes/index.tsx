@@ -102,6 +102,13 @@ function Index() {
         </div>
       </header>
 
+      {/* Selo de autoria */}
+      <div className="pointer-events-none absolute bottom-4 right-4 z-10">
+        <span className="pointer-events-auto rounded-full border border-border bg-card/85 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
+          Made by JD
+        </span>
+      </div>
+
       {/* Painel de camadas */}
       <aside className="absolute left-4 top-24 z-10 flex max-h-[calc(100vh-8rem)] w-72 flex-col gap-4 overflow-y-auto rounded-lg border border-border bg-card/90 p-4 backdrop-blur">
         <section className="space-y-2">
