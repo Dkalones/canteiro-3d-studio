@@ -52,7 +52,7 @@ export type SceneProps = {
 function useSiteTextures() {
   return useMemo(
     () => ({
-      ground: makeGroundTexture(12),
+      ground: makeGroundTexture(30),
       concrete: makeConcreteTexture(3),
       asphalt: makeAsphaltTexture(20),
       sand: makeSandTexture(2),
@@ -257,7 +257,7 @@ function Terrain({ tex }: { tex: Tex }) {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]} receiveShadow>
         <planeGeometry args={[SITE_W + pad * 2, SITE_D + pad * 2]} />
-        <meshStandardMaterial color="#7d8a63" roughness={1} />
+        <meshStandardMaterial color="#43682f" roughness={1} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[SITE_W, SITE_D]} />

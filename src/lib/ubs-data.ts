@@ -17,7 +17,7 @@ const PW = P.x1 - P.x0;
 const PD = P.y1 - P.y0;
 
 // A UBS ocupa a maior parte da área de construção, mantendo a proporção.
-const MARGIN = 4;
+const MARGIN = 1.2;
 const fit = Math.min(
   (CONSTRUCTION_AREA.w - MARGIN * 2) / PW,
   (CONSTRUCTION_AREA.d - MARGIN * 2) / PD,
