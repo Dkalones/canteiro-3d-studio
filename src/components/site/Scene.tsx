@@ -1,4 +1,3 @@
-
 /**
  * Scene.tsx — maquete 3D do canteiro de obras + UBS Porte II.
  *
@@ -7,12 +6,12 @@
  * Portas (0,90 x 2,10 m) e janelas (1,20 m de peitoril 1,00 m) seguem
  * dimensões usuais de projeto.
  */
- 
+
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Html, OrbitControls, Sky } from "@react-three/drei";
 import * as THREE from "three";
- 
+
 import {
   CATEGORY_INFO,
   EQUIPMENT,
@@ -42,7 +41,7 @@ import {
   makeTileTexture,
   makeWoodTexture,
 } from "@/components/site/textures";
- 
+
 export type SceneProps = {
   mode: "orbit" | "walk";
   visibleCategories: Record<Category, boolean>;
@@ -53,9 +52,9 @@ export type SceneProps = {
   focus: { x: number; z: number; label: string } | null;
   onSelect: (v: { id: string; label: string; detail: string } | null) => void;
 };
- 
+
 /* --------------------------------------------------------------- texturas */
- 
+
 function useSiteTextures() {
   return useMemo(
     () => ({
@@ -72,16 +71,16 @@ function useSiteTextures() {
     [],
   );
 }
- 
+
 type Tex = ReturnType<typeof useSiteTextures>;
- 
+
 const DOOR_W = 0.9;
 const DOOR_H = 2.1;
 const SILL_H = 1.0;
 const HEAD_H = 2.1;
- 
+
 /* ------------------------------------------------- parede com vãos (esquadrias) */
- 
+
 /**
  * Parede reta ao longo do eixo X local, com opção de porta central e/ou
  * faixa de janelas. Os vãos são construídos por segmentos (sem CSG).
@@ -106,7 +105,7 @@ function Wall({
   const mat = (
     <meshStandardMaterial color={color} map={map ?? null} roughness={0.92} metalness={0.02} />
   );
- 
+
   if (door && len > DOOR_W + 0.6) {
     const side = (len - DOOR_W) / 2;
     return (
@@ -142,7 +141,7 @@ function Wall({
       </group>
     );
   }
- 
+
   if (windows > 0 && h > HEAD_H + 0.15 && len > 1.4) {
     const pier = 0.45;
     const free = Math.max(len - pier * (windows + 1), 0.6);
@@ -192,7 +191,7 @@ function Wall({
       </group>
     );
   }
- 
+
   return (
     <mesh position={[0, h / 2, 0]} castShadow receiveShadow>
       <boxGeometry args={[len, h, t]} />
@@ -200,7 +199,7 @@ function Wall({
     </mesh>
   );
 }
- 
+
 /** Caixa de 4 paredes; cada face pode ser porta, janela ou parede cega. */
 function WalledBox({
   w,
@@ -246,10 +245,10 @@ function WalledBox({
     </group>
   );
 }
- 
- 
+
+
 /* ------------------------------------------------------------------ terreno */
- 
+
 function Terrain({ tex }: { tex: Tex }) {
   const pad = 16;
   return (
@@ -265,7 +264,7 @@ function Terrain({ tex }: { tex: Tex }) {
     </group>
   );
 }
- 
+
 /** Tapume metálico do canteiro com portão de entrada/saída ao sul. */
 function FenceWithGate({ tex, onPick }: { tex: Tex; onPick: () => void }) {
   const h = 2.2;
@@ -273,7 +272,21 @@ function FenceWithGate({ tex, onPick }: { tex: Tex; onPick: () => void }) {
   const hw = SITE_W / 2;
   const hd = SITE_D / 2;
   const panelSide = (SITE_W - gateW) / 2;
- 
+
+  // Abertura no muro leste para encaixar o portão da via interna
+  // (alinhado com a mesma posição usada em SiteRoad, sobre a faixa de pedestres).
+  const road = SITE_ELEMENTS.find((el) => el.id === "circulacao");
+  const eastGate = road
+    ? {
+        z: road.geom.z,
+        w: road.geom.d,
+      }
+    : null;
+  const eastNorthLen = eastGate ? eastGate.z - eastGate.w / 2 + hd : 0;
+  const eastNorthPos = eastGate ? (-hd + (eastGate.z - eastGate.w / 2)) / 2 : 0;
+  const eastSouthLen = eastGate ? hd - (eastGate.z + eastGate.w / 2) : 0;
+  const eastSouthPos = eastGate ? (eastGate.z + eastGate.w / 2 + hd) / 2 : 0;
+
   const Panel = ({
     len,
     pos,
@@ -296,15 +309,22 @@ function FenceWithGate({ tex, onPick }: { tex: Tex; onPick: () => void }) {
       ))}
     </group>
   );
- 
+
   return (
     <group>
       <Panel len={SITE_W} pos={[0, 0, -hd]} />
       <Panel len={SITE_D} pos={[-hw, 0, 0]} rotY={Math.PI / 2} />
-      <Panel len={SITE_D} pos={[hw, 0, 0]} rotY={Math.PI / 2} />
+      {eastGate ? (
+        <>
+          <Panel len={eastNorthLen} pos={[hw, 0, eastNorthPos]} rotY={Math.PI / 2} />
+          <Panel len={eastSouthLen} pos={[hw, 0, eastSouthPos]} rotY={Math.PI / 2} />
+        </>
+      ) : (
+        <Panel len={SITE_D} pos={[hw, 0, 0]} rotY={Math.PI / 2} />
+      )}
       <Panel len={panelSide} pos={[-hw + panelSide / 2, 0, hd]} />
       <Panel len={panelSide} pos={[hw - panelSide / 2, 0, hd]} />
- 
+
       {/* Portão de entrada e saída (duas folhas de correr, semiabertas) */}
       <group
         position={[0, 0, hd]}
@@ -351,9 +371,9 @@ function FenceWithGate({ tex, onPick }: { tex: Tex; onPick: () => void }) {
     </group>
   );
 }
- 
+
 /* --------------------------------------------------- elementos do canteiro */
- 
+
 function Barrack({
   el,
   dim,
@@ -368,7 +388,7 @@ function Barrack({
   const [hover, setHover] = useState(false);
   const { w, d, x, z } = el.geom;
   const color = CATEGORY_INFO[el.category].color;
- 
+
   return (
     <group
       position={[x, 0, z]}
@@ -416,7 +436,7 @@ function Barrack({
     </group>
   );
 }
- 
+
 /** Baia de material a granel: paredes de madeira + monte do material. */
 function StockBay({
   el,
@@ -433,12 +453,12 @@ function StockBay({
   const [hover, setHover] = useState(false);
   const wallH = 1.1;
   const t = 0.16;
- 
+
   const heapTex =
     el.id === "areia" ? tex.sand : el.id === "brita" ? tex.gravel : tex.concrete;
   const heapColor =
     el.id === "areia" ? "#d3ad6b" : el.id === "brita" ? "#8f8f8c" : el.id === "cal" ? "#e6e3dc" : "#b9b3a8";
- 
+
   return (
     <group
       position={[x, 0, z]}
@@ -466,7 +486,7 @@ function StockBay({
           <meshStandardMaterial map={tex.wood} color="#9a6f45" roughness={0.9} />
         </mesh>
       ))}
- 
+
       {el.id === "cimento" ? (
         // sacos de cimento empilhados sobre estrado
         <group>
@@ -507,7 +527,7 @@ function StockBay({
           ))}
         </group>
       )}
- 
+
       <Html center position={[0, 2.2, 0]} zIndexRange={[20, 0]}>
         <span className="pointer-events-none select-none whitespace-nowrap rounded bg-card/85 px-1.5 py-0.5 text-[10px] font-medium text-card-foreground shadow">
           {el.label}
@@ -522,7 +542,7 @@ function StockBay({
     </group>
   );
 }
- 
+
 /** Estoque de aço (vergalhões sobre cavaletes). */
 function SteelStock({
   el,
@@ -575,7 +595,7 @@ function SteelStock({
     </group>
   );
 }
- 
+
 function RoadArea({
   el,
   dim,
@@ -638,8 +658,8 @@ function RoadArea({
           </mesh>
         </group>
       ))}
-      {/* Portão no início da pista (controle de acesso à via interna) — alinhado à faixa de pedestres */}
-      <group position={[w / 2 - 3.25, 0, 0]}>
+      {/* Portão no início da pista (controle de acesso à via interna) — encaixado na abertura do muro leste */}
+      <group position={[w / 2 - 0.15, 0, 0]}>
         {([-d / 2, d / 2] as const).map((pz) => (
           <mesh key={pz} position={[0, 1.5, pz]} castShadow>
             <boxGeometry args={[0.3, 3, 0.3]} />
@@ -679,8 +699,8 @@ function RoadArea({
     </group>
   );
 }
- 
- 
+
+
 function ConstructionArea({ el, dim, tex }: { el: SiteElement; dim: boolean; tex: Tex }) {
   const { w, d, x, z } = el.geom;
   return (
@@ -711,7 +731,7 @@ function ConstructionArea({ el, dim, tex }: { el: SiteElement; dim: boolean; tex
     </group>
   );
 }
- 
+
 function PowerSource({
   el,
   dim,
@@ -752,7 +772,7 @@ function PowerSource({
     </group>
   );
 }
- 
+
 function Mixer({ x, z, tex }: { x: number; z: number; tex: Tex }) {
   return (
     <group position={[x, 0, z]}>
@@ -773,9 +793,9 @@ function Mixer({ x, z, tex }: { x: number; z: number; tex: Tex }) {
     </group>
   );
 }
- 
+
 /* ---------------------------------------------------------------------- UBS */
- 
+
 function UbsRoomMesh({
   room,
   showRoof,
@@ -791,7 +811,7 @@ function UbsRoomMesh({
   const { w, d, x, z } = room.geom;
   const h = room.wall;
   const color = UBS_ZONE_INFO[room.zone].color;
- 
+
   return (
     <group
       position={[x, 0, z]}
@@ -842,7 +862,7 @@ function UbsRoomMesh({
     </group>
   );
 }
- 
+
 function Ubs({
   showRooms,
   showRoofs,
@@ -889,7 +909,7 @@ function Ubs({
     </group>
   );
 }
- 
+
 function Scaffolding({ tex }: { tex: Tex }) {
   const mass = UBS_MASSES[1]!;
   const bays = 8;
@@ -933,21 +953,21 @@ function Scaffolding({ tex }: { tex: Tex }) {
     </group>
   );
 }
- 
+
 /* ------------------------------------------------------------------ controles */
- 
+
 function WalkControls() {
   const { camera, gl } = useThree();
   const keys = useRef<Record<string, boolean>>({});
   const euler = useRef(new THREE.Euler(0, 0, 0, "YXZ"));
   const locked = useRef(false);
- 
+
   useEffect(() => {
     camera.position.set(0, 1.7, SITE_D / 2 - 6);
     euler.current.set(0, Math.PI, 0);
     camera.quaternion.setFromEuler(euler.current);
   }, [camera]);
- 
+
   useEffect(() => {
     const el = gl.domElement;
     const down = (e: KeyboardEvent) => (keys.current[e.code] = true);
@@ -974,7 +994,7 @@ function WalkControls() {
       if (document.pointerLockElement === el) document.exitPointerLock?.();
     };
   }, [camera, gl]);
- 
+
   useFrame((_, delta) => {
     const speed = (keys.current["ShiftLeft"] ? 12 : 5) * delta;
     const dir = new THREE.Vector3();
@@ -993,13 +1013,13 @@ function WalkControls() {
     camera.position.x = THREE.MathUtils.clamp(camera.position.x, -SITE_W / 2 - lim, SITE_W / 2 + lim);
     camera.position.z = THREE.MathUtils.clamp(camera.position.z, -SITE_D / 2 - lim, SITE_D / 2 + lim);
   });
- 
+
   return null;
 }
- 
+
 function OrbitRig({ focus }: { focus: SceneProps["focus"] }) {
   const controls = useRef<React.ComponentRef<typeof OrbitControls>>(null);
- 
+
   useEffect(() => {
     if (!focus || !controls.current) return;
     const c = controls.current as unknown as {
@@ -1011,7 +1031,7 @@ function OrbitRig({ focus }: { focus: SceneProps["focus"] }) {
     c.object.position.set(focus.x + 16, 14, focus.z + 16);
     c.update();
   }, [focus]);
- 
+
   return (
     <OrbitControls
       ref={controls}
@@ -1025,9 +1045,9 @@ function OrbitRig({ focus }: { focus: SceneProps["focus"] }) {
     />
   );
 }
- 
+
 /* --------------------------------------------------------------------- cena */
- 
+
 export default function Scene({
   mode,
   visibleCategories,
@@ -1040,7 +1060,7 @@ export default function Scene({
 }: SceneProps) {
   const tex = useSiteTextures();
   const isDim = (el: SiteElement) => !!highlightNr && !el.nrs.includes(highlightNr);
- 
+
   return (
     <Canvas
       shadows
@@ -1063,7 +1083,7 @@ export default function Scene({
         shadow-camera-top={70}
         shadow-camera-bottom={-70}
       />
- 
+
       <Terrain tex={tex} />
       <FenceWithGate
         tex={tex}
@@ -1076,7 +1096,7 @@ export default function Scene({
           })
         }
       />
- 
+
       {SITE_ELEMENTS.filter((el) => visibleCategories[el.category]).map((el) => {
         const dim = isDim(el);
         const pick = () =>
@@ -1096,10 +1116,10 @@ export default function Scene({
           return <PowerSource key={el.id} el={el} dim={dim} tex={tex} onPick={pick} />;
         return <ConstructionArea key={el.id} el={el} dim={dim} tex={tex} />;
       })}
- 
+
       {visibleCategories.armazenamento &&
         EQUIPMENT.map((e) => <Mixer key={e.id} x={e.x} z={e.z} tex={tex} />)}
- 
+
       {visibleCategories.construcao && (
         <Ubs
           showRooms={showUbsRooms}
@@ -1109,7 +1129,7 @@ export default function Scene({
           onPick={onSelect}
         />
       )}
- 
+
       {showEngineers && (
         <Suspense fallback={null}>
           {ENGINEERS.map((eng) => (
@@ -1122,9 +1142,8 @@ export default function Scene({
           ))}
         </Suspense>
       )}
- 
+
       {mode === "orbit" ? <OrbitRig focus={focus} /> : <WalkControls />}
     </Canvas>
   );
 }
- 
