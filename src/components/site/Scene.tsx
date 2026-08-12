@@ -21,7 +21,13 @@ import {
   type Category,
   type SiteElement,
 } from "@/lib/site-data";
-import { UBS_MASSES, UBS_ROOMS, UBS_ZONE_INFO, type UbsRoom } from "@/lib/ubs-data";
+import {
+  UBS_MASSES,
+  UBS_ROOMS,
+  UBS_ZONE_INFO,
+  type RoomFaces,
+  type UbsRoom,
+} from "@/lib/ubs-data";
 import { ENGINEERS } from "@/lib/engineer-data";
 import Engineer from "@/components/site/Engineer";
 import {
@@ -194,7 +200,7 @@ function Wall({
   );
 }
 
-/** Caixa de 4 paredes com porta na face sul e janelas nas demais. */
+/** Caixa de 4 paredes; cada face pode ser porta, janela ou parede cega. */
 function WalledBox({
   w,
   d,
@@ -202,8 +208,7 @@ function WalledBox({
   t = 0.15,
   color,
   map,
-  doorSide = "south",
-  windows = true,
+  faces,
 }: {
   w: number;
   d: number;
@@ -211,43 +216,36 @@ function WalledBox({
   t?: number | undefined;
   color?: string | undefined;
   map?: THREE.Texture | undefined;
-  doorSide?: "south" | "north";
-  windows?: boolean;
+  faces?: RoomFaces | undefined;
 }) {
-  const nWin = (l: number) => (windows ? Math.max(1, Math.min(4, Math.floor(l / 3))) : 0);
+  const f: RoomFaces =
+    faces ?? { south: "door", north: "window", east: "window", west: "window" };
+  const nWin = (l: number) => Math.max(1, Math.min(4, Math.floor(l / 3)));
+  const face = (side: keyof RoomFaces, len: number) => (
+    <Wall
+      len={len}
+      h={h}
+      t={t}
+      color={color}
+      map={map}
+      door={f[side] === "door"}
+      windows={f[side] === "window" ? nWin(len) : 0}
+    />
+  );
   return (
     <group>
-      <group position={[0, 0, d / 2]}>
-        <Wall
-          len={w}
-          h={h}
-          t={t}
-          color={color}
-          map={map}
-          door={doorSide === "south"}
-          windows={doorSide === "south" ? 0 : nWin(w)}
-        />
-      </group>
-      <group position={[0, 0, -d / 2]}>
-        <Wall
-          len={w}
-          h={h}
-          t={t}
-          color={color}
-          map={map}
-          door={doorSide === "north"}
-          windows={doorSide === "north" ? 0 : nWin(w)}
-        />
-      </group>
+      <group position={[0, 0, d / 2]}>{face("south", w)}</group>
+      <group position={[0, 0, -d / 2]}>{face("north", w)}</group>
       <group position={[-w / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <Wall len={d} h={h} t={t} color={color} map={map} windows={nWin(d)} />
+        {face("west", d)}
       </group>
       <group position={[w / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <Wall len={d} h={h} t={t} color={color} map={map} windows={nWin(d)} />
+        {face("east", d)}
       </group>
     </group>
   );
 }
+
 
 /* ------------------------------------------------------------------ terreno */
 
@@ -639,9 +637,48 @@ function RoadArea({
           </mesh>
         </group>
       ))}
+      {/* Portão no início da pista (controle de acesso à via interna) */}
+      <group position={[-w / 2 - 0.2, 0, 0]}>
+        {([-d / 2, d / 2] as const).map((pz) => (
+          <mesh key={pz} position={[0, 1.5, pz]} castShadow>
+            <boxGeometry args={[0.3, 3, 0.3]} />
+            <meshStandardMaterial map={tex.concrete} color="#b9b3a6" roughness={0.9} />
+          </mesh>
+        ))}
+        <mesh position={[0, 3.1, 0]} castShadow>
+          <boxGeometry args={[0.28, 0.45, d + 0.4]} />
+          <meshStandardMaterial color="#e0b93a" roughness={0.6} />
+        </mesh>
+        {/* duas folhas semiabertas */}
+        {([-1, 1] as const).map((s) => (
+          <group key={s} position={[0, 0, (s * d) / 2]} rotation={[0, s * 0.6, 0]}>
+            <mesh position={[0, 1.1, (-s * d) / 4]} castShadow>
+              <boxGeometry args={[0.1, 2.2, d / 2]} />
+              <meshStandardMaterial
+                map={tex.metal}
+                color="#c8a63c"
+                metalness={0.45}
+                roughness={0.5}
+              />
+            </mesh>
+            {[0.5, 1.1, 1.7].map((y) => (
+              <mesh key={y} position={[0.06, y, (-s * d) / 4]}>
+                <boxGeometry args={[0.03, 0.08, d / 2 - 0.1]} />
+                <meshStandardMaterial color="#7d6a2c" metalness={0.4} roughness={0.6} />
+              </mesh>
+            ))}
+          </group>
+        ))}
+        <Html center position={[0, 3.9, 0]} zIndexRange={[20, 0]}>
+          <span className="pointer-events-none select-none whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground shadow">
+            Portão — início da via interna
+          </span>
+        </Html>
+      </group>
     </group>
   );
 }
+
 
 function ConstructionArea({ el, dim, tex }: { el: SiteElement; dim: boolean; tex: Tex }) {
   const { w, d, x, z } = el.geom;
@@ -784,8 +821,7 @@ function UbsRoomMesh({
             t={0.15}
             color="#ded7c8"
             map={tex.concrete}
-            doorSide="south"
-            windows
+            faces={room.faces}
           />
         </group>
       )}
