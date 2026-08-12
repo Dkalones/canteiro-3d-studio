@@ -15,25 +15,24 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
  
-import eng1Obj from "@/assets/models/eng1_base.obj.asset.json";
-import eng1Diffuse from "@/assets/models/eng1_texture_diffuse.png.asset.json";
-import eng1Normal from "@/assets/models/eng1_texture_normal.png.asset.json";
-import eng1Rough from "@/assets/models/eng1_texture_roughness.png.asset.json";
-import eng1Metal from "@/assets/models/eng1_texture_metallic.png.asset.json";
-import eng2Obj from "@/assets/models/eng2_base.obj.asset.json";
-import eng2Diffuse from "@/assets/models/eng2_texture_diffuse.png.asset.json";
-import eng2Normal from "@/assets/models/eng2_texture_normal.png.asset.json";
-import eng2Rough from "@/assets/models/eng2_texture_roughness.png.asset.json";
-import eng2Metal from "@/assets/models/eng2_texture_metallic.png.asset.json";
- 
 const SOURCES = {
   1: {
-    obj: eng1Obj.url,
-    maps: [eng1Diffuse.url, eng1Normal.url, eng1Rough.url, eng1Metal.url] as const,
+    obj: "/models/eng1_base.obj",
+    maps: [
+      "/models/eng1_texture_diffuse.png",
+      "/models/eng1_texture_normal.png",
+      "/models/eng1_texture_roughness.png",
+      "/models/eng1_texture_metallic.png",
+    ] as const,
   },
   2: {
-    obj: eng2Obj.url,
-    maps: [eng2Diffuse.url, eng2Normal.url, eng2Rough.url, eng2Metal.url] as const,
+    obj: "/models/eng2_base.obj",
+    maps: [
+      "/models/eng2_texture_diffuse.png",
+      "/models/eng2_texture_normal.png",
+      "/models/eng2_texture_roughness.png",
+      "/models/eng2_texture_metallic.png",
+    ] as const,
   },
 } as const;
  
