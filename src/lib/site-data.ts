@@ -264,7 +264,16 @@ export const EQUIPMENT = [
   { id: "betoneira-2", label: "Betoneira", x: rect(1075, 1005, 1103, 1045).x, z: rect(1075, 1005, 1103, 1045).z },
 ];
 
-export const NR_LAYERS = [
+export type NrLayer = {
+  id: string;
+  label: string;
+  description: string;
+  categories: Category[];
+  /** O que a norma contribui, na prática, para este canteiro. */
+  contributions: string[];
+};
+
+export const NR_LAYERS: NrLayer[] = [
   {
     id: "NR-1",
     label: "NR-1 — Disposições gerais e GRO",
@@ -278,6 +287,12 @@ export const NR_LAYERS = [
       "eletrica",
       "construcao",
     ] as Category[],
+    contributions: [
+      "Inventário de riscos e plano de ação (PGR) cobrindo todo o canteiro",
+      "Ordem de serviço e treinamento admissional antes da entrada na obra",
+      "Placas de identificação e organização das áreas por função",
+      "Registro de acidentes e quase-acidentes no escritório da obra",
+    ],
   },
   {
     id: "NR-4",
@@ -285,6 +300,11 @@ export const NR_LAYERS = [
     description:
       "Dimensionamento dos serviços especializados em segurança e medicina do trabalho, com base administrativa no escritório da obra.",
     categories: ["apoio"] as Category[],
+    contributions: [
+      "Base do SESMT instalada no escritório, com arquivo dos documentos de SST",
+      "Técnico de segurança acompanhando as frentes de serviço",
+      "Inspeções periódicas registradas por área do canteiro",
+    ],
   },
   {
     id: "NR-5",
@@ -292,6 +312,12 @@ export const NR_LAYERS = [
     description:
       "Comissão interna de prevenção de acidentes: reuniões, quadro de avisos e ações educativas nas áreas de vivência e administração.",
     categories: ["vivencia", "apoio"] as Category[],
+    contributions: [
+      "Sala de reuniões usada para as reuniões mensais da CIPA",
+      "Quadro de avisos de segurança no refeitório e no vestiário",
+      "DDS (diálogo diário de segurança) antes do início da jornada",
+      "Mapa de riscos afixado nas áreas de vivência",
+    ],
   },
   {
     id: "NR-6",
@@ -299,6 +325,12 @@ export const NR_LAYERS = [
     description:
       "Fornecimento, guarda e uso de equipamentos de proteção individual (capacete, botina, luvas, protetor auricular) na frente de serviço e no manuseio de materiais.",
     categories: ["construcao", "armazenamento", "apoio"] as Category[],
+    contributions: [
+      "Almoxarifado com estoque e ficha de entrega de EPIs",
+      "Capacete, botina e luvas obrigatórios na frente de serviço da UBS",
+      "Protetor auricular e óculos no corte de aço e nas betoneiras",
+      "Higienização e substituição de EPIs danificados",
+    ],
   },
   {
     id: "NR-10",
@@ -306,6 +338,12 @@ export const NR_LAYERS = [
     description:
       "Fonte de energia, quadros provisórios e distribuição elétrica do canteiro, com proteção contra choques e aterramento.",
     categories: ["eletrica"] as Category[],
+    contributions: [
+      "Quadro provisório com disjuntor DR e aterramento na fonte de energia",
+      "Cabos suspensos ou protegidos ao cruzar a via de circulação",
+      "Sinalização de risco elétrico e acesso restrito ao quadro",
+      "Serviços elétricos apenas por profissional autorizado",
+    ],
   },
   {
     id: "NR-12",
@@ -313,6 +351,12 @@ export const NR_LAYERS = [
     description:
       "Betoneiras, serras, equipamentos de movimentação e circulação de veículos: proteções fixas, dispositivos de partida e sinalização.",
     categories: ["armazenamento", "circulacao", "construcao", "eletrica"] as Category[],
+    contributions: [
+      "Betoneiras com proteção de coroa/pinhão e botão de parada",
+      "Serra de bancada com coifa, cutelo divisor e empurrador",
+      "Área de operação delimitada e sinalizada junto às baias",
+      "Manutenção preventiva registrada por equipamento",
+    ],
   },
   {
     id: "NR-18",
@@ -326,6 +370,13 @@ export const NR_LAYERS = [
       "circulacao",
       "construcao",
     ] as Category[],
+    contributions: [
+      "Tapume fechando o perímetro e portão único de entrada e saída",
+      "Áreas de vivência completas: refeitório, vestiário, sanitários e dormitórios",
+      "Vias de circulação desobstruídas, separando pedestres e veículos",
+      "Armazenamento de materiais em baias, sacos de cimento sobre estrado",
+      "Andaimes com guarda-corpo e rodapé na frente de serviço",
+    ],
   },
   {
     id: "NR-23",
@@ -333,6 +384,12 @@ export const NR_LAYERS = [
     description:
       "Extintores, sinalização, rotas de fuga e saída pelo portão de acesso; cuidados no armazenamento de materiais e nas áreas de vivência.",
     categories: ["vivencia", "apoio", "armazenamento", "circulacao", "construcao"] as Category[],
+    contributions: [
+      "Extintores sinalizados no refeitório, escritório e almoxarifado",
+      "Rota de fuga pela via de circulação até o portão de acesso",
+      "Ponto de encontro definido fora da área de construção",
+      "Controle de trabalhos a quente próximo a materiais combustíveis",
+    ],
   },
   {
     id: "NR-24",
@@ -340,6 +397,12 @@ export const NR_LAYERS = [
     description:
       "Instalações sanitárias, vestiário, refeitório, dormitórios, lavanderias e água potável.",
     categories: ["vivencia", "apoio"] as Category[],
+    contributions: [
+      "Sanitários e lavatórios dimensionados pelo número de trabalhadores",
+      "Refeitório com mesas, assentos e lavatório próximo",
+      "Água potável fresca disponível próxima às frentes de trabalho",
+      "Vestiário com armários individuais e lavanderia para uniformes",
+    ],
   },
   {
     id: "NR-35",
@@ -347,5 +410,12 @@ export const NR_LAYERS = [
     description:
       "Frente de serviço da UBS: andaimes com guarda-corpo e rodapé, ancoragem e atividades acima de 2,00 m.",
     categories: ["construcao"] as Category[],
+    contributions: [
+      "Análise de risco e permissão de trabalho para serviços acima de 2,00 m",
+      "Cinto tipo paraquedista com talabarte duplo e pontos de ancoragem",
+      "Andaimes travados, com prancha completa, guarda-corpo e rodapé",
+      "Isolamento da projeção no solo contra queda de materiais",
+    ],
   },
 ];
+
