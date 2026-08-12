@@ -46,6 +46,34 @@ export type UbsZone =
   | "servico"
   | "externo";
 
+export type Side = "north" | "south" | "east" | "west";
+export type Face = "door" | "window" | "solid";
+export type RoomFaces = Record<Side, Face>;
+
+/**
+ * Define as faces do ambiente conforme a planta baixa:
+ * - a porta fica na face que dá para a circulação/acesso;
+ * - janelas apenas nas faces que estão na fachada (perímetro da edificação);
+ * - as demais faces são cegas (paredes internas entre ambientes).
+ */
+export function faces(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  door: Side | null,
+): RoomFaces {
+  const tol = 50;
+  const f: RoomFaces = {
+    north: y1 - P.y0 < tol ? "window" : "solid",
+    south: P.y1 - y2 < tol ? "window" : "solid",
+    west: x1 - P.x0 < tol ? "window" : "solid",
+    east: P.x1 - x2 < tol ? "window" : "solid",
+  };
+  if (door) f[door] = "door";
+  return f;
+}
+
 export type UbsRoom = {
   id: string;
   label: string;
@@ -54,7 +82,9 @@ export type UbsRoom = {
   /** altura das paredes na maquete (a obra está em execução) */
   wall: number;
   roof?: boolean;
+  faces?: RoomFaces;
 };
+
 
 export const UBS_ZONE_INFO: Record<UbsZone, { label: string; color: string }> = {
   atendimento: { label: "Consultórios e atendimento", color: "#cfd8dc" },
