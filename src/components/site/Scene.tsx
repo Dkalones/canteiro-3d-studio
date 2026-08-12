@@ -637,9 +637,48 @@ function RoadArea({
           </mesh>
         </group>
       ))}
+      {/* Portão no início da pista (controle de acesso à via interna) */}
+      <group position={[-w / 2 - 0.2, 0, 0]}>
+        {([-d / 2, d / 2] as const).map((pz) => (
+          <mesh key={pz} position={[0, 1.5, pz]} castShadow>
+            <boxGeometry args={[0.3, 3, 0.3]} />
+            <meshStandardMaterial map={tex.concrete} color="#b9b3a6" roughness={0.9} />
+          </mesh>
+        ))}
+        <mesh position={[0, 3.1, 0]} castShadow>
+          <boxGeometry args={[0.28, 0.45, d + 0.4]} />
+          <meshStandardMaterial color="#e0b93a" roughness={0.6} />
+        </mesh>
+        {/* duas folhas semiabertas */}
+        {([-1, 1] as const).map((s) => (
+          <group key={s} position={[0, 0, (s * d) / 2]} rotation={[0, s * 0.6, 0]}>
+            <mesh position={[0, 1.1, (-s * d) / 4]} castShadow>
+              <boxGeometry args={[0.1, 2.2, d / 2]} />
+              <meshStandardMaterial
+                map={tex.metal}
+                color="#c8a63c"
+                metalness={0.45}
+                roughness={0.5}
+              />
+            </mesh>
+            {[0.5, 1.1, 1.7].map((y) => (
+              <mesh key={y} position={[0.06, y, (-s * d) / 4]}>
+                <boxGeometry args={[0.03, 0.08, d / 2 - 0.1]} />
+                <meshStandardMaterial color="#7d6a2c" metalness={0.4} roughness={0.6} />
+              </mesh>
+            ))}
+          </group>
+        ))}
+        <Html center position={[0, 3.9, 0]} zIndexRange={[20, 0]}>
+          <span className="pointer-events-none select-none whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground shadow">
+            Portão — início da via interna
+          </span>
+        </Html>
+      </group>
     </group>
   );
 }
+
 
 function ConstructionArea({ el, dim, tex }: { el: SiteElement; dim: boolean; tex: Tex }) {
   const { w, d, x, z } = el.geom;
