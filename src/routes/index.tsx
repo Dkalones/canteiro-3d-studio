@@ -227,11 +227,59 @@ function Index() {
               </button>
             ))}
           </div>
-          {activeNr && (
-            <p className="rounded-md border border-border bg-muted p-2 text-[11px] leading-snug text-muted-foreground">
-              <strong className="text-foreground">{activeNr.label}.</strong> {activeNr.description}
+          {activeNr ? (
+            <div className="space-y-2 rounded-md border border-border bg-muted p-2">
+              <p className="text-[11px] leading-snug text-muted-foreground">
+                <strong className="text-foreground">{activeNr.label}.</strong>{" "}
+                {activeNr.description}
+              </p>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  O que contribui para o canteiro
+                </p>
+                <ul className="space-y-1">
+                  {activeNr.contributions.map((c) => (
+                    <li key={c} className="flex gap-1.5 text-[11px] leading-snug text-foreground">
+                      <span className="mt-[3px] size-1.5 shrink-0 rounded-full bg-primary" />
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Áreas afetadas
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {activeNr.categories.map((c) => (
+                    <span
+                      key={c}
+                      className="inline-flex items-center gap-1 rounded border border-border bg-card px-1.5 py-0.5 text-[10px] text-foreground"
+                    >
+                      <span
+                        className="size-2 rounded-sm border border-border"
+                        style={{ backgroundColor: CATEGORY_INFO[c].color }}
+                      />
+                      {CATEGORY_INFO[c].label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p className="text-[10px] leading-snug text-muted-foreground">
+                Elementos do canteiro com esta NR:{" "}
+                <strong className="text-foreground">
+                  {SITE_ELEMENTS.filter((e) => e.nrs.includes(activeNr.id)).length}
+                </strong>{" "}
+                (os demais ficam esmaecidos na maquete).
+              </p>
+            </div>
+          ) : (
+            <p className="text-[11px] leading-snug text-muted-foreground">
+              Selecione uma NR para ver o que ela contribui para o canteiro e destacar as áreas
+              onde ela se aplica.
             </p>
           )}
+
         </section>
       </aside>
 
