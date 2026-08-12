@@ -16,25 +16,27 @@ const P = { x0: 130, y0: 145, x1: 1790, y1: 1340 };
 const PW = P.x1 - P.x0;
 const PD = P.y1 - P.y0;
 
-// A UBS ocupa a maior parte da área de construção, mantendo a proporção.
+// A UBS ocupa praticamente toda a área de construção.
+// fitZ limita pela profundidade; no eixo X é permitido um leve alongamento
+// (até 1,3x) para que a edificação não fique pequena dentro da área.
 const MARGIN = 1.2;
-const fit = Math.min(
-  (CONSTRUCTION_AREA.w - MARGIN * 2) / PW,
-  (CONSTRUCTION_AREA.d - MARGIN * 2) / PD,
-);
+const fitZ = (CONSTRUCTION_AREA.d - MARGIN * 2) / PD;
+const fitXmax = (CONSTRUCTION_AREA.w - MARGIN * 2) / PW;
+const fitX = Math.min(fitXmax, fitZ * 1.3);
 
-export const UBS_SCALE = fit;
-export const UBS_W = PW * fit;
-export const UBS_D = PD * fit;
+export const UBS_SCALE = fitZ;
+export const UBS_W = PW * fitX;
+export const UBS_D = PD * fitZ;
 export const UBS_ORIGIN = { x: CONSTRUCTION_AREA.x, z: CONSTRUCTION_AREA.z };
 
 export function urect(x1: number, y1: number, x2: number, y2: number) {
-  const w = (x2 - x1) * fit;
-  const d = (y2 - y1) * fit;
-  const cx = ((x1 + x2) / 2 - (P.x0 + P.x1) / 2) * fit + UBS_ORIGIN.x;
-  const cz = ((y1 + y2) / 2 - (P.y0 + P.y1) / 2) * fit + UBS_ORIGIN.z;
+  const w = (x2 - x1) * fitX;
+  const d = (y2 - y1) * fitZ;
+  const cx = ((x1 + x2) / 2 - (P.x0 + P.x1) / 2) * fitX + UBS_ORIGIN.x;
+  const cz = ((y1 + y2) / 2 - (P.y0 + P.y1) / 2) * fitZ + UBS_ORIGIN.z;
   return { w, d, x: cx, z: cz };
 }
+
 
 export type UbsZone =
   | "atendimento"
