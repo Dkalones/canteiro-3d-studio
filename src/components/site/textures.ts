@@ -44,25 +44,44 @@ function noise(
   }
 }
 
-// repeat=12: num plano de 92m com textura 256px → tiles de ~7,7m cada
-// Antes estava em 60 → tiles de ~1,5m → parecia pixelado/bugado
-export function makeGroundTexture(repeat = 12) {
-  const size = 512; // tamanho maior = mais detalhe por tile
+// Terreno natural do canteiro: grama
+export function makeGroundTexture(repeat = 24) {
+  const size = 512;
   const { c, ctx } = makeCanvas(size);
-  ctx.fillStyle = "#8a7a63";
+  ctx.fillStyle = "#4e7a3a";
   ctx.fillRect(0, 0, size, size);
-  noise(ctx, size, 8000, ["#7d6d57", "#96866d", "#6f6151", "#a09071"], 0.6, 2.6);
-  // linhas de textura do solo compactado
-  for (let i = 0; i < 30; i++) {
-    ctx.strokeStyle = `rgba(100,88,68,${0.05 + Math.random() * 0.08})`;
-    ctx.lineWidth = 0.5 + Math.random() * 1.5;
+  // manchas de tonalidade
+  for (let i = 0; i < 60; i++) {
+    const g = ctx.createRadialGradient(
+      Math.random() * size,
+      Math.random() * size,
+      2,
+      Math.random() * size,
+      Math.random() * size,
+      30 + Math.random() * 60,
+    );
+    g.addColorStop(0, `rgba(${90 + Math.random() * 40 | 0},${130 + Math.random() * 40 | 0},60,0.18)`);
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+  }
+  // fios de grama
+  const blades = ["#3f6a2e", "#5c8c42", "#6f9c4e", "#375f2a", "#7ba85a"];
+  for (let i = 0; i < 9000; i++) {
+    ctx.strokeStyle = blades[Math.floor(Math.random() * blades.length)] ?? "#4e7a3a";
+    ctx.lineWidth = 0.7 + Math.random() * 0.9;
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const h = 3 + Math.random() * 6;
     ctx.beginPath();
-    ctx.moveTo(Math.random() * size, Math.random() * size);
-    ctx.lineTo(Math.random() * size, Math.random() * size);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + (Math.random() - 0.5) * 3, y - h);
     ctx.stroke();
   }
+  noise(ctx, size, 900, ["#8fae6a", "#2f5324"], 0.4, 1.2);
   return finish(c, repeat);
 }
+
 
 export function makeConcreteTexture(repeat = 4) {
   const size = 256;
