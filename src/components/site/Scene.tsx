@@ -194,7 +194,7 @@ function Wall({
   );
 }
 
-/** Caixa de 4 paredes com porta na face sul e janelas nas demais. */
+/** Caixa de 4 paredes; cada face pode ser porta, janela ou parede cega. */
 function WalledBox({
   w,
   d,
@@ -202,8 +202,7 @@ function WalledBox({
   t = 0.15,
   color,
   map,
-  doorSide = "south",
-  windows = true,
+  faces,
 }: {
   w: number;
   d: number;
@@ -211,43 +210,36 @@ function WalledBox({
   t?: number | undefined;
   color?: string | undefined;
   map?: THREE.Texture | undefined;
-  doorSide?: "south" | "north";
-  windows?: boolean;
+  faces?: RoomFaces | undefined;
 }) {
-  const nWin = (l: number) => (windows ? Math.max(1, Math.min(4, Math.floor(l / 3))) : 0);
+  const f: RoomFaces =
+    faces ?? { south: "door", north: "window", east: "window", west: "window" };
+  const nWin = (l: number) => Math.max(1, Math.min(4, Math.floor(l / 3)));
+  const face = (side: keyof RoomFaces, len: number) => (
+    <Wall
+      len={len}
+      h={h}
+      t={t}
+      color={color}
+      map={map}
+      door={f[side] === "door"}
+      windows={f[side] === "window" ? nWin(len) : 0}
+    />
+  );
   return (
     <group>
-      <group position={[0, 0, d / 2]}>
-        <Wall
-          len={w}
-          h={h}
-          t={t}
-          color={color}
-          map={map}
-          door={doorSide === "south"}
-          windows={doorSide === "south" ? 0 : nWin(w)}
-        />
-      </group>
-      <group position={[0, 0, -d / 2]}>
-        <Wall
-          len={w}
-          h={h}
-          t={t}
-          color={color}
-          map={map}
-          door={doorSide === "north"}
-          windows={doorSide === "north" ? 0 : nWin(w)}
-        />
-      </group>
+      <group position={[0, 0, d / 2]}>{face("south", w)}</group>
+      <group position={[0, 0, -d / 2]}>{face("north", w)}</group>
       <group position={[-w / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <Wall len={d} h={h} t={t} color={color} map={map} windows={nWin(d)} />
+        {face("west", d)}
       </group>
       <group position={[w / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <Wall len={d} h={h} t={t} color={color} map={map} windows={nWin(d)} />
+        {face("east", d)}
       </group>
     </group>
   );
 }
+
 
 /* ------------------------------------------------------------------ terreno */
 
